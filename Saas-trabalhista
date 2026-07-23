@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Rescisão Trabalhista</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #resultado {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 10px;
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+    }
+
+    .valor-final {
+      font-size: 26px;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+
+    .aviso {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Simulador de Rescisão Trabalhista</h1>
+    <p>Faça uma estimativa dos seus direitos trabalhistas</p>
+  </header>
+
+  <div class="container">
+
+    <div class="card">
+
+      <label>Salário bruto mensal</label>
+      <input type="number" id="salario" placeholder="Ex: 2500">
+
+      <label>Data de admissão</label>
+      <input type="date" id="admissao">
+
+      <label>Data de demissão</label>
+      <input type="date" id="demissao">
+
+      <label>Tipo de demissão</label>
+      <select id="tipo">
+        <option value="sem_justa_causa">Demissão sem justa causa</option>
+        <option value="pedido">Pedido de demissão</option>
+        <option value="justa_causa">Demissão por justa causa</option>
+      </select>
+
+      <label>Férias vencidas?</label>
+      <select id="ferias">
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+
+      <button onclick="calcular()">Calcular rescisão</button>
+
+      <div id="resultado">
+        <h2>Resultado estimado</h2>
+
+        <p>Saldo de salário: <strong id="saldo"></strong></p>
+        <p>13º proporcional: <strong id="decimo"></strong></p>
+        <p>Férias proporcionais + 1/3: <strong id="feriasProp"></strong></p>
+        <p>Férias vencidas: <strong id="feriasVencidas"></strong></p>
+
+        <hr>
+
+        <p>Total estimado:</p>
+        <div class="valor-final" id="total"></div>
+      </div>
+
+      <p class="aviso">
+        ⚠️ Este simulador fornece uma estimativa e não substitui uma análise profissional ou jurídica.
+      </p>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    function dinheiro(valor) {
+      return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    function calcular() {
+
+      const salario = Number(document.getElementById('salario').value);
+      const admissao = new Date(document.getElementById('admissao').value);
+      const demissao = new Date(document.getElementById('demissao').value);
+      const tipo = document.getElementById('tipo').value;
+      const ferias = document.getElementById('ferias').value;
+
+      if (!salario || !admissao || !demissao) {
+        alert('Preencha todos os campos.');
+        return;
+      }
+
+      const diaDemissao = demissao.getDate();
+
+      const saldo = (salario / 30) * diaDemissao;
+
+      const meses13 = demissao.getMonth() + 1;
+      const decimo = (salario / 12) * meses13;
+
+      const mesesFerias = demissao.getMonth() + 1;
+      const feriasProp = (salario / 12) * mesesFerias * (4 / 3);
+
+      let feriasVencidas = 0;
+
+      if (ferias === 'sim') {
+        feriasVencidas = salario * (4 / 3);
+      }
+
+      let total = saldo + decimo + feriasProp + feriasVencidas;
+
+      if (tipo === 'justa_causa') {
+        total = saldo;
+      }
+
+      document.getElementById('saldo').innerText = dinheiro(saldo);
+      document.getElementById('decimo').innerText = dinheiro(decimo);
+      document.getElementById('feriasProp').innerText = dinheiro(feriasProp);
+      document.getElementById('feriasVencidas').innerText = dinheiro(feriasVencidas);
+      document.getElementById('total').innerText = dinheiro(total);
+
+      document.getElementById('resultado').style.display = 'block';
+    }
+
+  </script>
+
+</body>
+</html>cript>
+y>
+|>
