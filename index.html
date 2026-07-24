@@ -1,221 +1,320 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadoras Trabalhistas CLT Grátis 2026 - Rescisão, Férias, 13º e Mais</title>
-<meta name="description" content="Calculadoras gratuitas de rescisão trabalhista, horas extras, férias, 13º salário, FGTS, aposentadoria INSS e financiamento. Simule seus direitos CLT em segundos." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLT Fácil — Calculadora de Rescisão, Horas Extras, Férias, 13º, FGTS e Aposentadoria</title>
+<meta name="description" content="Calcule online e de graça: rescisão trabalhista, horas extras, férias, 13º salário, FGTS, aposentadoria do INSS e financiamento SAC x Price. Sem cadastro, resultado na hora.">
+<meta name="keywords" content="calculadora trabalhista, calcular rescisão trabalhista, calculadora de horas extras, calculadora férias 13º FGTS, aposentadoria INSS, financiamento SAC x Price">
+<link rel="canonical" href="https://saas-trabalhista.vercel.app/">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="CLT Fácil — Suas contas trabalhistas, calculadas certo">
+<meta property="og:description" content="Rescisão, horas extras, férias, 13º, FGTS, aposentadoria e financiamento. Cinco calculadoras gratuitas, sem cadastro.">
+<meta property="og:url" content="https://saas-trabalhista.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index, follow">
 
-    body {
-      margin: 0;
-      background: #f4f6f8;
-      color: #1f2937;
-    }
+<!-- JSON-LD: site + lista de ferramentas -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "CLT Fácil",
+  "url": "https://saas-trabalhista.vercel.app/",
+  "inLanguage": "pt-BR",
+  "description": "Calculadoras trabalhistas gratuitas: rescisão, horas extras, férias, 13º, FGTS, aposentadoria INSS e financiamento SAC x Price."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {"@type":"ListItem","position":1,"name":"Calculadora de Rescisão Trabalhista","url":"https://saas-trabalhista.vercel.app/rescisao.html"},
+    {"@type":"ListItem","position":2,"name":"Calculadora de Horas Extras","url":"https://saas-trabalhista.vercel.app/horas-extras.html"},
+    {"@type":"ListItem","position":3,"name":"Calculadora de Férias, 13º e FGTS","url":"https://saas-trabalhista.vercel.app/ferias-13-fgts.html"},
+    {"@type":"ListItem","position":4,"name":"Simulador de Aposentadoria INSS","url":"https://saas-trabalhista.vercel.app/aposentadoria.html"},
+    {"@type":"ListItem","position":5,"name":"Comparador de Financiamento SAC x Price","url":"https://saas-trabalhista.vercel.app/financiamento.html"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"As calculadoras são gratuitas?","acceptedAnswer":{"@type":"Answer","text":"Sim. Todas as calculadoras do CLT Fácil são gratuitas e não exigem cadastro para ver o resultado."}},
+    {"@type":"Question","name":"O resultado tem validade jurídica?","acceptedAnswer":{"@type":"Answer","text":"Não. Os cálculos são uma estimativa educativa. Para validade jurídica, consulte um contador ou advogado trabalhista."}},
+    {"@type":"Question","name":"Preciso me cadastrar para usar?","acceptedAnswer":{"@type":"Answer","text":"Não. Basta abrir a calculadora desejada, preencher os dados pedidos e o resultado aparece na hora, com opção de gerar PDF."}}
+  ]
+}
+</script>
 
-    header {
-      background: #111827;
-      color: white;
-      padding: 24px 16px;
-      text-align: center;
-    }
+<style>
+  :root{
+    --navy:#16324F;
+    --navy-dark:#0E2338;
+    --paper:#F1EEE3;
+    --ink:#1C1B18;
+    --stamp:#B5482A;
+    --gold:#C89B3C;
+    --ok:#2F6B4F;
+    --line:#CFC7AE;
+    --line-soft:#E4DFCF;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,.brand{
+    font-family:'Archivo','Inter',sans-serif;
+    font-weight:800;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  a{color:inherit;}
+  :focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 24px;
-    }
+  /* header */
+  header{
+    background:var(--navy);
+    color:#EDEAE0;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky; top:0; z-index:10;
+    border-bottom:3px solid var(--gold);
+  }
+  .brand{color:#fff; font-size:1.15rem; text-decoration:none; display:flex; align-items:center; gap:8px;}
+  .brand .dot{width:9px;height:9px;background:var(--gold);border-radius:50%;display:inline-block;}
+  nav.top a{
+    color:#C9D2DB; text-decoration:none; font-size:.85rem; margin-left:18px; font-family:'IBM Plex Mono',monospace;
+  }
+  nav.top a:hover{color:#fff;}
+  @media (max-width:640px){ nav.top{display:none;} }
 
-    header p {
-      margin: 0;
-      opacity: 0.8;
-    }
+  /* hero — estilo "recibo/holerite" */
+  .hero{
+    background:var(--navy);
+    color:#EDEAE0;
+    padding:38px 20px 46px;
+  }
+  .receipt{
+    max-width:640px;
+    margin:0 auto;
+    background:var(--navy-dark);
+    border:1px solid #2A4A6B;
+    border-radius:var(--radius);
+    padding:24px 22px;
+  }
+  .receipt-top{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px dashed #3A5C80;
+    padding-bottom:12px; margin-bottom:14px;
+    font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.06em;
+    color:#9FB2C4; text-transform:uppercase;
+  }
+  .receipt h1{
+    margin:0 0 6px; font-size:1.7rem; color:#fff;
+  }
+  .receipt p.sub{margin:0 0 18px; color:#B9C6D2; font-size:.95rem; max-width:46ch;}
+  .receipt-fields{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px 20px;
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:#C9D2DB;
+    border-top:1px dashed #3A5C80; padding-top:14px;
+  }
+  .receipt-fields span{color:#7C93A8;}
+  .stamp{
+    position:absolute; transform:rotate(-9deg);
+    border:2px solid var(--stamp); color:var(--stamp);
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:.68rem;
+    letter-spacing:.08em; text-transform:uppercase;
+    padding:5px 10px; border-radius:4px; opacity:.9;
+    margin-top:-52px; margin-left:calc(100% - 128px);
+  }
+  @media (max-width:640px){ .stamp{display:none;} }
 
-    .container {
-      max-width: 700px;
-      margin: 25px auto;
-      padding: 0 16px;
-    }
+  /* seção calculadoras — linhas tipo folha de pagamento */
+  main{max-width:760px; margin:0 auto; padding:44px 20px 20px;}
+  .section-label{
+    font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.12em;
+    text-transform:uppercase; color:#8A8367; margin-bottom:6px;
+  }
+  main h2{font-size:1.3rem; margin:0 0 22px;}
 
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
+  .calc-list{list-style:none; margin:0 0 40px; padding:0; border-top:1px solid var(--line);}
+  .calc-item{
+    border-bottom:1px solid var(--line);
+  }
+  .calc-link{
+    display:flex; align-items:center; gap:16px;
+    padding:18px 4px; text-decoration:none; color:var(--ink);
+  }
+  .calc-num{
+    font-family:'IBM Plex Mono',monospace; font-size:.75rem; color:#9A9376;
+    width:22px; flex-shrink:0;
+  }
+  .calc-body{flex:1; min-width:0;}
+  .calc-body h3{margin:0 0 3px; font-size:1.02rem; font-weight:700;}
+  .calc-body p{margin:0; font-size:.85rem; color:#5B573F;}
+  .calc-leader{
+    flex:1; border-bottom:1px dotted var(--line); margin:0 12px; min-width:20px;
+    display:none;
+  }
+  @media (min-width:560px){ .calc-leader{display:block;} }
+  .calc-cta{
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--navy);
+    white-space:nowrap; flex-shrink:0; font-weight:600;
+  }
+  .calc-item:hover .calc-cta{color:var(--stamp);}
+  .calc-item:hover{background:#EAE5D5;}
 
-    label {
-      display: block;
-      margin-top: 16px;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
+  /* faq */
+  .faq{margin-bottom:48px;}
+  details{border-bottom:1px solid var(--line); padding:14px 2px;}
+  summary{cursor:pointer; font-weight:700; font-size:.95rem; list-style:none; display:flex; justify-content:space-between; gap:12px;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"+"; font-family:'IBM Plex Mono',monospace; color:var(--stamp);}
+  details[open] summary::after{content:"–";}
+  details p{margin:10px 0 2px; font-size:.88rem; color:#4A4634; max-width:56ch;}
 
-    input, select {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 16px;
-    }
+  .disclaimer{
+    font-size:.78rem; color:#6B664D; border-left:3px solid var(--gold);
+    padding:10px 14px; background:#E9E4D3; margin-bottom:40px;
+  }
 
-    button {
-      width: 100%;
-      margin-top: 22px;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    #resultado {
-      display: none;
-      margin-top: 22px;
-      padding: 18px;
-      border-radius: 10px;
-      background: #ecfdf5;
-      border: 1px solid #10b981;
-    }
-
-    .valor-final {
-      font-size: 26px;
-      font-weight: bold;
-      margin-top: 12px;
-    }
-
-    .aviso {
-      margin-top: 18px;
-      font-size: 12px;
-      color: #6b7280;
-    }
-  </style>
+  footer{
+    text-align:center; padding:24px 20px 40px; font-size:.75rem; color:#8A8367;
+    font-family:'IBM Plex Mono',monospace;
+  }
+</style>
 </head>
-
 <body>
 
-  <header>
-    <h1>Simulador de Rescisão Trabalhista</h1>
-    <p>Faça uma estimativa dos seus direitos trabalhistas</p>
-  </header>
+<header>
+  <a class="brand" href="/"><span class="dot"></span>CLT Fácil</a>
+  <nav class="top">
+    <a href="#calculadoras">Calculadoras</a>
+    <a href="#faq">Dúvidas</a>
+  </nav>
+</header>
 
-  <div class="container">
-
-    <div class="card">
-
-      <label>Salário bruto mensal</label>
-      <input type="number" id="salario" placeholder="Ex: 2500">
-
-      <label>Data de admissão</label>
-      <input type="date" id="admissao">
-
-      <label>Data de demissão</label>
-      <input type="date" id="demissao">
-
-      <label>Tipo de demissão</label>
-      <select id="tipo">
-        <option value="sem_justa_causa">Demissão sem justa causa</option>
-        <option value="pedido">Pedido de demissão</option>
-        <option value="justa_causa">Demissão por justa causa</option>
-      </select>
-
-      <label>Férias vencidas?</label>
-      <select id="ferias">
-        <option value="nao">Não</option>
-        <option value="sim">Sim</option>
-      </select>
-
-      <button onclick="calcular()">Calcular rescisão</button>
-
-      <div id="resultado">
-        <h2>Resultado estimado</h2>
-
-        <p>Saldo de salário: <strong id="saldo"></strong></p>
-        <p>13º proporcional: <strong id="decimo"></strong></p>
-        <p>Férias proporcionais + 1/3: <strong id="feriasProp"></strong></p>
-        <p>Férias vencidas: <strong id="feriasVencidas"></strong></p>
-
-        <hr>
-
-        <p>Total estimado:</p>
-        <div class="valor-final" id="total"></div>
-      </div>
-
-      <p class="aviso">
-        ⚠️ Este simulador fornece uma estimativa e não substitui uma análise profissional ou jurídica.
-      </p>
-
+<section class="hero">
+  <div class="receipt" style="position:relative;">
+    <div class="stamp">100% grátis</div>
+    <div class="receipt-top">
+      <span>Recibo de direitos · Nº 001–005</span>
+      <span>Sem cadastro</span>
     </div>
+    <h1>Suas contas trabalhistas, calculadas certo.</h1>
+    <p class="sub">Cinco calculadoras gratuitas para descobrir exatamente quanto você tem direito a receber — rescisão, horas extras, férias, 13º, FGTS, aposentadoria e financiamento.</p>
+    <div class="receipt-fields">
+      <div><span>Situação</span><br>Trabalhador(a) CLT</div>
+      <div><span>Resultado</span><br>Discriminado, na hora</div>
+      <div><span>Formato</span><br>Cálculo + PDF</div>
+      <div><span>Custo</span><br>R$ 0,00</div>
+    </div>
+  </div>
+</section>
 
+<main>
+  <div id="calculadoras">
+    <p class="section-label">Escolha sua calculadora</p>
+    <h2>O que você quer calcular hoje?</h2>
+    <ul class="calc-list">
+      <li class="calc-item">
+        <a class="calc-link" href="/rescisao.html">
+          <span class="calc-num mono">01</span>
+          <span class="calc-body">
+            <h3>Rescisão Trabalhista</h3>
+            <p>Saldo de salário, aviso prévio, FGTS + multa, férias e 13º proporcionais.</p>
+          </span>
+          <span class="calc-leader"></span>
+          <span class="calc-cta">Calcular →</span>
+        </a>
+      </li>
+      <li class="calc-item">
+        <a class="calc-link" href="/horas-extras.html">
+          <span class="calc-num mono">02</span>
+          <span class="calc-body">
+            <h3>Horas Extras</h3>
+            <p>Adicional noturno, reflexo no DSR e base de 220h mensais.</p>
+          </span>
+          <span class="calc-leader"></span>
+          <span class="calc-cta">Calcular →</span>
+        </a>
+      </li>
+      <li class="calc-item">
+        <a class="calc-link" href="/ferias-13-fgts.html">
+          <span class="calc-num mono">03</span>
+          <span class="calc-body">
+            <h3>Férias, 13º e FGTS</h3>
+            <p>Simule os três direitos juntos, com o terço constitucional incluído.</p>
+          </span>
+          <span class="calc-leader"></span>
+          <span class="calc-cta">Calcular →</span>
+        </a>
+      </li>
+      <li class="calc-item">
+        <a class="calc-link" href="/aposentadoria.html">
+          <span class="calc-num mono">04</span>
+          <span class="calc-body">
+            <h3>Aposentadoria INSS</h3>
+            <p>Projeção de tempo de contribuição e valor estimado do benefício.</p>
+          </span>
+          <span class="calc-leader"></span>
+          <span class="calc-cta">Calcular →</span>
+        </a>
+      </li>
+      <li class="calc-item">
+        <a class="calc-link" href="/financiamento.html">
+          <span class="calc-num mono">05</span>
+          <span class="calc-body">
+            <h3>Financiamento SAC x Price</h3>
+            <p>Compare as duas tabelas lado a lado antes de assinar o contrato.</p>
+          </span>
+          <span class="calc-leader"></span>
+          <span class="calc-cta">Calcular →</span>
+        </a>
+      </li>
+    </ul>
   </div>
 
-  <script>
+  <div class="disclaimer">
+    Este site oferece estimativas educativas para fins de planejamento pessoal. Os cálculos não substituem a análise de um contador ou advogado trabalhista.
+  </div>
 
-    function dinheiro(valor) {
-      return valor.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      });
-    }
+  <div class="faq" id="faq">
+    <p class="section-label">Antes de começar</p>
+    <h2>Perguntas frequentes</h2>
+    <details>
+      <summary>As calculadoras são gratuitas?</summary>
+      <p>Sim. Todas são gratuitas e não pedem cadastro para mostrar o resultado.</p>
+    </details>
+    <details>
+      <summary>O resultado tem validade jurídica?</summary>
+      <p>Não. É uma estimativa para você se planejar. Para validade jurídica, consulte um contador ou advogado trabalhista.</p>
+    </details>
+    <details>
+      <summary>Consigo salvar ou baixar o resultado?</summary>
+      <p>Sim, cada calculadora gera um PDF com o resultado discriminado, pronto para guardar ou levar a um profissional.</p>
+    </details>
+  </div>
+</main>
 
-    function calcular() {
-
-      const salario = Number(document.getElementById('salario').value);
-      const admissao = new Date(document.getElementById('admissao').value);
-      const demissao = new Date(document.getElementById('demissao').value);
-      const tipo = document.getElementById('tipo').value;
-      const ferias = document.getElementById('ferias').value;
-
-      if (!salario || !admissao || !demissao) {
-        alert('Preencha todos os campos.');
-        return;
-      }
-
-      const diaDemissao = demissao.getDate();
-
-      const saldo = (salario / 30) * diaDemissao;
-
-      const meses13 = demissao.getMonth() + 1;
-      const decimo = (salario / 12) * meses13;
-
-      const mesesFerias = demissao.getMonth() + 1;
-      const feriasProp = (salario / 12) * mesesFerias * (4 / 3);
-
-      let feriasVencidas = 0;
-
-      if (ferias === 'sim') {
-        feriasVencidas = salario * (4 / 3);
-      }
-
-      let total = saldo + decimo + feriasProp + feriasVencidas;
-
-      if (tipo === 'justa_causa') {
-        total = saldo;
-      }
-
-      document.getElementById('saldo').innerText = dinheiro(saldo);
-      document.getElementById('decimo').innerText = dinheiro(decimo);
-      document.getElementById('feriasProp').innerText = dinheiro(feriasProp);
-      document.getElementById('feriasVencidas').innerText = dinheiro(feriasVencidas);
-      document.getElementById('total').innerText = dinheiro(total);
-
-      document.getElementById('resultado').style.display = 'block';
-    }
-
-  </script>
+<footer>
+  CLT Fácil — cálculos trabalhistas simples, sem enrolação.
+</footer>
 
 </body>
-</html>cript>
-y>
-|>
+</html>
