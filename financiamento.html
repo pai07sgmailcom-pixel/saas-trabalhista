@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comparador de Financiamento - SAC x Price</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f5f5f7;
+    margin: 0;
+    padding: 20px;
+    color: #1a1a1a;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 14px;
+  }
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  button {
+    width: 100%;
+    margin-top: 22px;
+    padding: 12px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; }
+  .erro {
+    color: #c0392b;
+    margin-top: 14px;
+    font-size: 0.9rem;
+  }
+  .resultado {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+  }
+  .colunas {
+    display: flex;
+    gap: 12px;
+  }
+  .coluna {
+    flex: 1;
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .coluna h3 {
+    font-size: 0.95rem;
+    margin: 0 0 8px 0;
+  }
+  .coluna p {
+    margin: 4px 0;
+    font-size: 0.82rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .coluna .destaque {
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-top: 1px solid #e2e2e2;
+    padding-top: 6px;
+    margin-top: 6px;
+  }
+  .vencedor {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: #eaf7ea;
+    color: #1e7d1e;
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .aviso {
+    font-size: 0.75rem;
+    color: #777;
+    margin-top: 14px;
+  }
+  a.voltar {
+    display: inline-block;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #555;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="voltar" href="index.html">&larr; Voltar</a>
+    <h1>Comparador de Financiamento (SAC x Price)</h1>
+
+    <form id="form-financiamento">
+      <label for="valorFinanciado">Valor financiado (R$)</label>
+      <input type="number" step="0.01" id="valorFinanciado" required placeholder="Ex: 250000" />
+
+      <label for="taxaJurosMensal">Taxa de juros mensal (%)</label>
+      <input type="number" step="0.01" id="taxaJurosMensal" required placeholder="Ex: 1.2" />
+
+      <label for="numeroParcelas">Número de parcelas (meses)</label>
+      <input type="number" id="numeroParcelas" required placeholder="Ex: 360" />
+
+      <button type="submit" id="btn-calcular">Comparar</button>
+    </form>
+
+    <div class="erro" id="erro" style="display:none;"></div>
+
+    <div class="resultado" id="resultado" style="display:none;">
+      <div class="colunas">
+        <div class="coluna">
+          <h3>SAC</h3>
+          <p><span>1ª parcela</span><span id="sac-primeira"></span></p>
+          <p><span>Última parcela</span><span id="sac-ultima"></span></p>
+          <p><span>Total juros</span><span id="sac-juros"></span></p>
+          <p class="destaque"><span>Total pago</span><span id="sac-total"></span></p>
+        </div>
+        <div class="coluna">
+          <h3>Price</h3>
+          <p><span>Parcela fixa</span><span id="price-parcela"></span></p>
+          <p><span>Total juros</span><span id="price-juros"></span></p>
+          <p class="destaque"><span>Total pago</span><span id="price-total"></span></p>
+        </div>
+      </div>
+
+      <div class="vencedor" id="vencedor"></div>
+
+      <p class="aviso">Este cálculo é uma estimativa. Consulte sua instituição financeira para condições reais do contrato.</p>
+    </div>
+  </div>
+
+  <script>
+    const VAL_TOWN_URL = "https://pauloeliseu1983santos--d0910d7c86f411f1b36c1607ee4eb77e.web.val.run/";
+
+    function formatarMoeda(valor) {
+      return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    document.getElementById("form-financiamento").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const erroEl = document.getElementById("erro");
+      const resultadoEl = document.getElementById("resultado");
+      const btn = document.getElementById("btn-calcular");
+
+      erroEl.style.display = "none";
+      resultadoEl.style.display = "none";
+      btn.disabled = true;
+      btn.textContent = "Calculando...";
+
+      const payload = {
+        valorFinanciado: parseFloat(document.getElementById("valorFinanciado").value) || 0,
+        taxaJurosMensal: parseFloat(document.getElementById("taxaJurosMensal").value) || 0,
+        numeroParcelas: parseInt(document.getElementById("numeroParcelas").value) || 0,
+      };
+
+      try {
+        const resp = await fetch(VAL_TOWN_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          erroEl.textContent = data.error || "Erro ao calcular";
+          erroEl.style.display = "block";
+          return;
+        }
+
+        document.getElementById("sac-primeira").textContent = formatarMoeda(data.sac.primeiraParcela);
+        document.getElementById("sac-ultima").textContent = formatarMoeda(data.sac.ultimaParcela);
+        document.getElementById("sac-juros").textContent = formatarMoeda(data.sac.totalJuros);
+        document.getElementById("sac-total").textContent = formatarMoeda(data.sac.totalPago);
+
+        document.getElementById("price-parcela").textContent = formatarMoeda(data.price.parcelaFixa);
+        document.getElementById("price-juros").textContent = formatarMoeda(data.price.totalJuros);
+        document.getElementById("price-total").textContent = formatarMoeda(data.price.totalPago);
+
+        const diferenca = Math.abs(data.comparacao.diferencaTotalPago);
+        document.getElementById("vencedor").textContent =
+          data.comparacao.maisBarato + " é mais barato, economia de " + formatarMoeda(diferenca) + " no total";
+
+        resultadoEl.style.display = "block";
+      } catch (err) {
+        erroEl.textContent = "Não foi possível conectar ao servidor de cálculo. Tente novamente.";
+        erroEl.style.display = "block";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Comparar";
+      }
+    });
+  </script>
+</body>
+</html>
