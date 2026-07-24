@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Projeção de Aposentadoria - INSS</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f5f5f7;
+    margin: 0;
+    padding: 20px;
+    color: #1a1a1a;
+  }
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 14px;
+  }
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+  }
+  button {
+    width: 100%;
+    margin-top: 22px;
+    padding: 12px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; }
+  .erro {
+    color: #c0392b;
+    margin-top: 14px;
+    font-size: 0.9rem;
+  }
+  .resultado {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+  }
+  .resultado p {
+    margin: 6px 0;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .resultado .total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .aviso {
+    font-size: 0.75rem;
+    color: #777;
+    margin-top: 14px;
+    line-height: 1.4;
+  }
+  a.voltar {
+    display: inline-block;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #555;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a class="voltar" href="index.html">&larr; Voltar</a>
+    <h1>Projeção de Aposentadoria (INSS)</h1>
+
+    <form id="form-aposentadoria">
+      <label for="idadeAtual">Idade atual</label>
+      <input type="number" id="idadeAtual" required placeholder="Ex: 35" />
+
+      <label for="sexo">Sexo (para regra de idade mínima)</label>
+      <select id="sexo" required>
+        <option value="">Selecione</option>
+        <option value="masculino">Masculino</option>
+        <option value="feminino">Feminino</option>
+      </select>
+
+      <label for="salarioAtual">Salário atual (R$)</label>
+      <input type="number" step="0.01" id="salarioAtual" required placeholder="Ex: 4000" />
+
+      <label for="tempoContribuicaoAnos">Tempo de contribuição atual (anos)</label>
+      <input type="number" step="0.5" id="tempoContribuicaoAnos" required placeholder="Ex: 10" />
+
+      <button type="submit" id="btn-calcular">Calcular</button>
+    </form>
+
+    <div class="erro" id="erro" style="display:none;"></div>
+
+    <div class="resultado" id="resultado" style="display:none;">
+      <h2 style="font-size:1.05rem; margin-bottom:8px;">Resultado</h2>
+      <p><span>Anos até se aposentar</span><span id="r-anos"></span></p>
+      <p><span>Idade estimada na aposentadoria</span><span id="r-idade"></span></p>
+      <p><span>Tempo de contribuição na aposentadoria</span><span id="r-tempoContrib"></span></p>
+      <p><span>Percentual do benefício</span><span id="r-percentual"></span></p>
+      <p class="total"><span>Valor estimado do benefício</span><span id="r-valor"></span></p>
+      <p class="aviso" id="aviso-teto" style="display:none;">Valor limitado pelo teto do INSS.</p>
+      <p class="aviso">Este cálculo é uma estimativa simplificada baseada na regra geral pós-reforma (EC 103/2019) e não considera regras de transição, pontuação (86/96), fator previdenciário ou média salarial completa. Consulte o INSS ou um especialista em previdência.</p>
+    </div>
+  </div>
+
+  <script>
+    const VAL_TOWN_URL = "https://pauloeliseu1983santos--782ccf2686ff11f188fd1607ee4eb77e.web.val.run/";
+
+    function formatarMoeda(valor) {
+      return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    document.getElementById("form-aposentadoria").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const erroEl = document.getElementById("erro");
+      const resultadoEl = document.getElementById("resultado");
+      const btn = document.getElementById("btn-calcular");
+
+      erroEl.style.display = "none";
+      resultadoEl.style.display = "none";
+      btn.disabled = true;
+      btn.textContent = "Calculando...";
+
+      const payload = {
+        idadeAtual: parseFloat(document.getElementById("idadeAtual").value) || 0,
+        sexo: document.getElementById("sexo").value,
+        salarioAtual: parseFloat(document.getElementById("salarioAtual").value) || 0,
+        tempoContribuicaoAnos: parseFloat(document.getElementById("tempoContribuicaoAnos").value) || 0,
+      };
+
+      try {
+        const resp = await fetch(VAL_TOWN_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          erroEl.textContent = data.error || "Erro ao calcular";
+          erroEl.style.display = "block";
+          return;
+        }
+
+        const r = data.resultado;
+        document.getElementById("r-anos").textContent = r.anosParaAposentar + " anos";
+        document.getElementById("r-idade").textContent = r.idadeEstimadaAposentadoria + " anos";
+        document.getElementById("r-tempoContrib").textContent = r.tempoContribuicaoNaAposentadoria + " anos";
+        document.getElementById("r-percentual").textContent = r.percentualBeneficio + "%";
+        document.getElementById("r-valor").textContent = formatarMoeda(r.valorEstimadoBeneficio);
+
+        document.getElementById("aviso-teto").style.display = r.tetoINSSAplicado ? "block" : "none";
+
+        resultadoEl.style.display = "block";
+      } catch (err) {
+        erroEl.textContent = "Não foi possível conectar ao servidor de cálculo. Tente novamente.";
+        erroEl.style.display = "block";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Calcular";
+      }
+    });
+  </script>
+</body>
+</html>
